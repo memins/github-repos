@@ -1,12 +1,14 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
-import Popular from "./components/Popular";
-import Battle from "./components/Battle";
-import Result from "./components/Result";
 import { ThemeProvider } from "./contexts/theme";
 import Nav from "./components/Nav";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import Loading from "./components/Loading";
+
+const Popular = React.lazy(() => import("./components/Popular"));
+const Battle = React.lazy(() => import("./components/Battle"));
+const Result = React.lazy(() => import("./components/Result"));
 
 class App extends React.Component {
   constructor(props) {
@@ -29,12 +31,14 @@ class App extends React.Component {
             <div className="container">
               <Nav />
 
-              <Switch>
-                <Route exact path="/" component={Popular} />
-                <Route exact path="/battle" component={Battle} />
-                <Route path="/battle/result" component={Result} />
-                <Route render={() => <h1>404</h1>} />
-              </Switch>
+              <React.Suspense fallback={<Loading />}>
+                <Switch>
+                  <Route exact path="/" component={Popular} />
+                  <Route exact path="/battle" component={Battle} />
+                  <Route path="/battle/result" component={Result} />
+                  <Route render={() => <h1>404</h1>} />
+                </Switch>
+              </React.Suspense>
             </div>
           </div>
         </ThemeProvider>
